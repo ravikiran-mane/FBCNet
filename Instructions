@@ -1,0 +1,99 @@
+Instructions to Run FBCNet on Korea University and BCI competition IV-2a dataset. 
+These instructions have been tested on Ubuntu system. They should work for other platforms with appropriate modifications.  
+
+Step 1: Set-up a virtual environment
+-----------------------------------------------------------------------------------------------------------------------
+All the codes have been tested to work using a virtual environment mentioned in the req.txt file. 
+1. Install python3 and python3 dev packages (dev packages are extreemly important):
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt-get install python3.7
+sudo apt-get install python-dev python3.7-dev \
+     build-essential libssl-dev libffi-dev \
+     libxml2-dev libxslt1-dev zlib1g-dev \
+     python-pip
+
+1. Install virtualenv package:
+sudo apt-get install virtualenv 
+
+2. Create a new virtual environment with python3.7: fbcnetEnv
+cd FBCNetToolbox
+virtualenv fbcnetEnv -p python3.7
+
+3. load the virtualenv and install required packages
+source fbcnetEnv/bin/activate 
+pip install -r req.txt
+
+
+Step 2: Get the data
+-------------------------------------------------------------------------------------------------------------------------
+BCI competition IV-2a:
+    The BCI competition IV-2a dataset is only accessible to registered users. So, you need to manually download the data.
+    1. Register and download the train and test data at http://www.bbci.de/competition/iv/  or http://bbci.de/competition/iv/download .
+    2. The data will be a zip file. Extract the zip file and copy its content to ../FBCNetToolbox/data/bci42a/originalData
+    3. Download the test data labels from http://bbci.de/competition/iv/results/ds2a/true_labels.zip
+    4. Extract the contents of the zip file and copy them to ../FBCNetToolbox/data/bci42a/originalData
+    5. At the end of this step you should have 18 .gdf and 18 .mat files in the folder ../FBCNetToolbox/data/bci42a/originalData
+
+Korea University Dataset:
+    We recommond running the analysis for BCI competition IV-2a before analyzing the Korea Uni. dataset.
+
+    Korea university dataset is accessible by FTP protocol. So, all the motor imagery related data can be downloaded using a python function parseKoreaDataset in savedata.py
+    Any of the below analysis will call this function. So running any of the analysis will fetch and save the Korea data if it's not present.
+    Be mindful that this is a huge dataset and it can take a few hours to download. 
+
+    Alternatively, if you already have this dataset with you then copy the data files to the directory ../FBCNetToolbox/data/korea/originalData  
+    The expected file structure of the data is as follows:
+    originalData/session1
+                    -/s1/EEG_MI.mat
+                    -/s2/EEG_MI.mat
+                    .
+                    .
+                    .
+                /session2
+                    -/s1/EEG_MI.mat
+                    -/s2/EEG_MI.mat
+                    .
+                    .
+                    .
+
+Step 3: Run the classification codes
+------------------------------------------------------------------------------------------------------------------------------
+For both of these datasets two analysis can be performed:
+
+cv: a 10-fold cross-validation analysis using session 1 data
+ho: a hold out analysis where session 1 data is used for training and session 2 data is used for testing
+
+1. HO analysis:
+    HO analysis will be performed using ho.py in classify directory
+    So, To analyze data run the following commands:
+        source fbcnetEnv/bin/activate 
+        python codes/classify/ho.py <datasetId> <networkName> 
+    Here:
+        <datasetId>     : The id of the dataset to analyze: (0/1) 
+                            0 : bci42a data (default)
+                            1 : korea data
+        <networkName>     : The Network to use for classification
+                             'FBCNet' (default)/'deepConvNet'/'eegNet'
+
+    So, to analyze bci42a data using 'FBCNet' run the following command:
+        python codes/classify/ho.py 0 'FBCNet'
+
+    After the execution, all classification results will be stored in a folder ../FBCNetToolbox/output/<datasetName>/HO
+
+2. CV analysis:
+    CV analysis will be performed using cv.py in classify directory
+    So, To analyze data run the following commands:
+        source fbcnetEnv/bin/activate 
+        python codes/classify/cv.py <datasetId> <networkName> 
+
+    The <networkName> and <datasetId> carry same meaning as that of HO analysis.
+    Please understand that CV analysis trains 10 models for each subject. So, it is very slow and can take up to 12 hr to run on the Korea dataset based on the available hardware. 
+
+    After the execution, all classification results will be stored in a folder ../FBCNetToolbox/output/<datasetName>/CV
+
+
+Step 4: Exploration and custom tweaking 
+------------------------------------------------------------------------------------------------------------------------------------
+Feel free to change any classification parameters or training methods by modifying the code files in classify and centralRepo directories.
+Happy exploration!
