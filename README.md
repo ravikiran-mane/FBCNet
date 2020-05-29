@@ -4,4 +4,3 @@
 This is the PyTorch implementation of the FBCNet architecture for EEG-BCI classification. 
 
 ![The FBCNet architecture](/FBCNet-V2.png)
-Format: ![Alt Text](The FBCNet architecture)
