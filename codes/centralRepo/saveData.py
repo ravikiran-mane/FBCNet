@@ -188,7 +188,7 @@ def fetchAndParseKoreaFile(dataPath, url = None, epochWindow = [0,4],
     if downsampleFactor is not None:
         xNew = np.zeros((int(x.shape[0]/downsampleFactor), x.shape[1], x.shape[2]), np.float32)
         for i in range(x.shape[2]): # resampy.resample cant handle the 3D data. 
-            xNew[:,i,:] = resampy.resample(x[:,i,:], s, s/downsampleFactor, axis = 0)
+            xNew[:,:,i] = resampy.resample(x[:,:,i], s, s/downsampleFactor, axis = 0)
         x = xNew
         s = s/downsampleFactor
     
