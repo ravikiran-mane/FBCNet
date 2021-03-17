@@ -58,11 +58,11 @@ def cv(datasetId = None, network = None, nGPU = None, subTorun=None):
     
     if datasetId == 1:
         config['modelArguments'] = {'nChan': 20, 'nTime': 1000, 'dropoutP': 0.5,
-                                    'nBands':9, 'm' : 4, 'temporalLayer': 'VarLayer',
+                                    'nBands':9, 'm' : 32, 'temporalLayer': 'LogVarLayer',
                                     'nClass': 2, 'doWeightNorm': True}
     elif datasetId == 0:
         config['modelArguments'] = {'nChan': 22, 'nTime': 1000, 'dropoutP': 0.5,
-                                    'nBands':9, 'm' : 16, 'temporalLayer': 'VarLayer',
+                                    'nBands':9, 'm' : 32, 'temporalLayer': 'LogVarLayer',
                                     'nClass': 4, 'doWeightNorm': True}
     
     # Training related details    
