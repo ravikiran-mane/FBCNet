@@ -30,7 +30,9 @@ The classification results for FBCNet and other competing architectures are as f
 ## Cite:
 If you find this architecture or toolbox useful then please cite this paper:
 
-*Ravikiran Mane, Effie Chew, Karen Chua, Kai Keng Ang, Neethu Robinson, A.P. Vinod, Seong-Whan Lee, and Cuntai Guan, **"FBCNet: An Efficient Multi-view Convolutional Neural Network for Brain-Computer Interface,"** IEEE Transactions on Neural Networks and Learning Systems.  (Under Review)*
+Mane, Ravikiran, Effie Chew, Karen Chua, Kai Keng Ang, Neethu Robinson, A. Prasad Vinod, Seong-Whan Lee, and Cuntai Guan. "FBCNet: A Multi-view Convolutional Neural Network for Brain-Computer Interface." arXiv preprint arXiv:2104.01233 (2021).
+
+*Ravikiran Mane, Effie Chew, Karen Chua, Kai Keng Ang, Neethu Robinson, A.P. Vinod, Seong-Whan Lee, and Cuntai Guan, **"FBCNet: An Efficient Multi-view Convolutional Neural Network for Brain-Computer Interface,"** arXiv preprint arXiv:2104.01233 (2021) https://arxiv.org/abs/2104.01233*
 
 ## Acknowledgment
 We thank Ding Yi for the assistance in code preparation. 
