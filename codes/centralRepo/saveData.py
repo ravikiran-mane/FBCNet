@@ -4,6 +4,7 @@
 Data processing functions for EEG data
 @author: Ravikiran Mane
 """
+#%%
 import numpy as np
 import mne
 from scipy.io import loadmat, savemat
@@ -22,6 +23,7 @@ sys.path.insert(1, os.path.join(masterPath, 'centralRepo')) # To load all the re
 from eegDataset import eegDataset
 import transforms
 
+#%%
 def parseBci42aFile(dataPath, labelPath, epochWindow = [0,4], chans = list(range(22))):
     '''
     Parse the bci42a data file and return an epoched data. 
@@ -44,13 +46,16 @@ def parseBci42aFile(dataPath, labelPath, epochWindow = [0,4], chans = list(range
         s: float, sampling frequency
         c: list of channels - can be list of ints. 
     '''
-    eventCode = [2] # start of the trial at t=0
+    eventCode = ['768'] # start of the trial at t=0
     fs = 250
     offset = 2
     
     #load the gdf file using MNE
     raw_gdf = mne.io.read_raw_gdf(dataPath, stim_channel="auto")
     raw_gdf.load_data()
+    gdf_event_labels = mne.events_from_annotations(raw_gdf)[1]
+    eventCode = [gdf_event_labels[x] for x in eventCode]
+
     gdf_events = mne.events_from_annotations(raw_gdf)[0][:,[0,2]].tolist()
     eeg = raw_gdf.get_data()
     
@@ -67,6 +72,9 @@ def parseBci42aFile(dataPath, labelPath, epochWindow = [0,4], chans = list(range
     # Multiply the data with 1e6
     x = x*1e6
     
+    # have a check to ensure that all the 288 EEG trials are extracted.
+    assert x.shape[-1] == 288, "Could not extracted all the 288 trials from GDF file: {}. Manually check what is the reason for this".format(dataPath)
+
     #Load the labels
     y = loadmat(labelPath)["classlabel"].squeeze()
     # change the labels from [1-4] to [0-3] 
@@ -74,6 +82,7 @@ def parseBci42aFile(dataPath, labelPath, epochWindow = [0,4], chans = list(range
     
     data = {'x': x, 'y': y, 'c': np.array(raw_gdf.info['ch_names'])[chans].tolist(), 's': fs}
     return data
+
 
 def parseBci42aDataset(datasetPath, savePath, 
                        epochWindow = [0,4], chans = list(range(22)), verbos = False):
@@ -375,9 +384,9 @@ def pythonToMultiviewPython(datasetPath, savePath,
     Creates a new dataset and stores it in a savePath folder. 
 
     '''
-    trasnformAndSave(datasetPath, savePath, transform = filterTransform)
+    transformAndSave(datasetPath, savePath, transform = filterTransform)
 
-def trasnformAndSave(datasetPath, savePath, transform = None):
+def transformAndSave(datasetPath, savePath, transform = None):
     '''
     Apply a data transform and save the result as a new eegdataset
 
@@ -460,7 +469,7 @@ def fetchData(dataFolder, datasetId = 0):
     None.
 
     '''
-    print('fetch ssettins: ', dataFolder, datasetId)
+    print('fetch stetting: ', dataFolder, datasetId)
     oDataFolder = 'originalData'
     rawMatFolder = 'rawMat'
     rawPythonFolder = 'rawPython'
@@ -530,3 +539,5 @@ def fetchData(dataFolder, datasetId = 0):
 #                        'ftp://parrot.genomics.cn/gigadb/pub/10.5524/100001_101000/100542/session1/s1/sess01_subj01_EEG_MI.mat')
 
 # parseKoreaDataset('/home/ravi/FBCNetToolbox/data/korea/originalData','/home/ravi/FBCNetToolbox/data/korea/rawMat')
+
+# %%
